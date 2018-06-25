@@ -26,7 +26,7 @@ export default {
     decrement () {
       this.$store.commit('decrement')
     },
-    do_connect()
+    do_connect ()
     {
         if(!dal.frontServer._connected) {
             dal.frontServer.registerServerCodesHandler(dal.frontServer.onServerCodes, dal.frontServer);
