@@ -11,13 +11,12 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-const env = require('../config/prod.env')
+const env = require('../config/uat.env')
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
-    //调用utils.styleLoaders的方法
     rules: utils.styleLoaders({
-      sourceMap: config.build.productionSourceMap,//开启调试的模式。默认为true
+      sourceMap: config.build.productionSourceMap,
       extract: true,
       usePostCSS: true
     })
@@ -35,15 +34,15 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
     new UglifyJsPlugin({
       uglifyOptions: {
-        compress: {//压缩
-          warnings: false//警告：true保留警告，false不保留
+        compress: {
+          warnings: false
         }
       },
       sourceMap: config.build.productionSourceMap,
       parallel: true
     }),
     // extract css into its own file
-    new ExtractTextPlugin({//抽取文本。比如打包之后的index页面有style插入，就是这个插件抽取出来的，减少请求
+    new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css'),
       // Setting the following option to `false` will not extract CSS from codesplit chunks.
       // Their CSS will instead be inserted dynamically with style-loader when the codesplit chunk has been loaded by webpack.
@@ -53,7 +52,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
-    new OptimizeCSSPlugin({//优化css的插件
+    new OptimizeCSSPlugin({
       cssProcessorOptions: config.build.productionSourceMap
         ? { safe: true, map: { inline: false } }
         : { safe: true }
@@ -61,28 +60,26 @@ const webpackConfig = merge(baseWebpackConfig, {
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
-    new HtmlWebpackPlugin({//html打包
-      filename: process.env.NODE_ENV === 'testing'
-        ? 'index.html'
-        : config.build.index,
+    new HtmlWebpackPlugin({
+      filename: config.build.index,
       template: 'index.html',
       inject: true,
-      minify: {//压缩
-        removeComments: true,//删除注释
-        collapseWhitespace: true,//删除空格
-        removeAttributeQuotes: true//删除属性的引号
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      chunksSortMode: 'dependency'//模块排序，按照我们需要的顺序排序
+      chunksSortMode: 'dependency'
     }),
     // keep module.id stable when vendor modules does not change
     new webpack.HashedModuleIdsPlugin(),
     // enable scope hoisting
     new webpack.optimize.ModuleConcatenationPlugin(),
     // split vendor js into its own file
-    new webpack.optimize.CommonsChunkPlugin({//抽取公共的模块
+    new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks (module) {
         // any required modules inside node_modules are extracted to vendor
@@ -112,7 +109,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
 
     // copy custom static assets
-    new CopyWebpackPlugin([//复制，比如打包完之后需要把打包的文件复制到dist里面
+    new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, '../static'),
         to: config.build.assetsSubDirectory,
